@@ -13,7 +13,7 @@ static int in2 = 2;
 
 // その他
 
-int delay_time = 100;//200ms
+int delay_time = 200;//200ms
 
 void setup(){
   Serial.begin(115200);
