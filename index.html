@@ -21,7 +21,7 @@
             <video id='video' width="512" height="384"></video>
         </div>
         <div class="col-md-3">
-            <iframe id="graph_iframe" src="command/r0" width="200" height="384" sandbox="allow-scripts"></iframe>
+            <iframe id="graph_iframe" src="command/r0" width="400" height="384" sandbox="allow-scripts"></iframe>
         </div>
     </div>
 
@@ -174,12 +174,23 @@
                     $('#smileLevel').text(smileLevel);
                     $('#troubleLevel').text(troubleLevel);
 
+                    draw_doughnut(smileLevel,troubleLevel);
+
+                    var th = 1.3;
+                    if( smileLevel > troubleLevel * th ){
+                        smileLevel = smileLevel * th;
+                        troubleLevel = troubleLevel / th;
+                    }
+
+                    if( troubleLevel > smileLevel * th ){
+                        troubleLevel = troubleLevel * th;
+                        smileLevel = smileLevel / th;
+                    }
+
                     s = "http://localhost:8946/command/r"+parseInt(smileLevel/10);
                     $.get(s);
                     s = "http://localhost:8946/command/g"+parseInt(troubleLevel/10);
                     $.get(s);
-
-                    draw_doughnut(smileLevel,troubleLevel);
 
                 }).fail(function(data){
                     console.log("fail");
@@ -197,8 +208,7 @@
             }
 
             if(e.keyCode == 48 || e.keyCode == 96 ){    // 0
-                send_toco("r0");
-                send_toco("g0")
+                send_toco("0")
                 draw_doughnut(0,0);
             }
 

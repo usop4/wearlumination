@@ -11,6 +11,7 @@ tocostick_tty = '/dev/tty.usbserial-AHXMUX35'
 try:
     ser = serial.Serial(arduino_tty,baudrate=115200, timeout=0.1)
     toco = tocotika.Toco(tocostick_tty)
+    toco.analogWrite2(0,0)
 except OSError as (errno,strerror):
     if errno == 2 : # No such file or directory
         print "USB device is not connected"
@@ -41,7 +42,7 @@ graph1 = '''
     var areaChartData;
     $(document).ready(function() {
         areaChartData = {
-            labels: [1,2,3,4,5,6,7,8,9,10],
+            labels: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],
             datasets: [
                 {
                     label: "sensor1",
@@ -55,7 +56,7 @@ graph1 = '''
                 }
             ]
         };
-        var areaChartOptions = {
+        var lineChartOptions = {
             pointDot: false,
             datasetStroke: true,
             datasetFill: true,
@@ -63,10 +64,8 @@ graph1 = '''
 '''
 
 graph2 = '''
-
         var lineChartCanvas = $("#lineChart").get(0).getContext("2d");
         var lineChart = new Chart(lineChartCanvas);
-        var lineChartOptions = areaChartOptions;
         lineChartOptions.datasetFill = false;
         lineChart.Line(areaChartData, lineChartOptions);
     });
@@ -89,6 +88,8 @@ def send_img(filename):
 def command(command):
     response.set_header('Access-Control-Allow-Origin','*')
     try:
+        if command[0] == "0":
+            toco.analogWrite2(0,0)
         if command[0] == "r":
             toco.analogWrite(1,int(command[1])*10)
         if command[0] == "g":
@@ -97,8 +98,7 @@ def command(command):
         pass
     except:
         print sys.exc_info()[0]
-        toco.analogWrite(1,0)
-        toco.analogWrite(2,0)
+        toco.analogWrite2(0,0)
         raise
     return link
 
@@ -122,11 +122,12 @@ def sensor():
             val2 = int(val2 * val2 / 256)
 
             if toco:
-                count = count + 1;
-                if count % 2 == 0:
-                    toco.analogWrite(1,val1)
-                else:
-                    toco.analogWrite(2,val2)
+                toco.analogWrite2(val1,val2)
+                #count = count + 1;
+                #if count % 2 == 0:
+                #    toco.analogWrite(1,val1)
+                #else:
+                #    toco.analogWrite(2,val2)
                 print sensor,val1,val2
 
         except ValueError:
@@ -136,8 +137,9 @@ def sensor():
         except:
             print sys.exc_info()[0]
             if toco:
-                toco.analogWrite(1,0)
-                toco.analogWrite(2,0)
+                toco.analogWrite2(0,0)
+                #toco.analogWrite(1,0)
+                #toco.analogWrite(2,0)
             raise
     desc = "";
     i = 0;
