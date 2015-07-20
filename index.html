@@ -8,7 +8,8 @@
 <div class="container">
 
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-3 center-block">
+            <canvas id="pieChart"></canvas>
             <p>smile:<span id="smileLevel"></span></p>
             <p>trouble:<span id="troubleLevel"></span></p>
             <p>age:<span id="ageResult"></span></p>
@@ -20,28 +21,20 @@
             <video id='video' width="512" height="384"></video>
         </div>
         <div class="col-md-3">
-<!--
-            <canvas id="pieChart" height="200" width="200"></canvas>
--->
-            <canvas id="pieChart"></canvas>
+
+            <iframe src="sensor" width="300" height="100"></iframe>
+
         </div>
     </div>
 
     <div class="row">
-        <div class="col-md-3">
-        </div>
+        <div class="col-md-12">.</div>
     </div>
 
     <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10 center-block">
             <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-
-                <ol class="carousel-indicators">
-                    <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-                    <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-                    <li data-target="#carousel-example-generic" data-slide-to="2"></li>
-                </ol>
 
                 <div class="carousel-inner" role="listbox">
                     <div class="item active"><img src="img/img.001.jpg"></div>
@@ -125,10 +118,16 @@
                 function(localMediaStream) {
                     GUM.video.src = window.URL.createObjectURL(localMediaStream);
                     GUM.video.play();
+
+                    video.style.cssText += "transform: rotateY(180deg);-webkit-transform:rotateY(180deg);-moz-transform:rotateY(180deg);-ms-transform:rotateY(180deg);";
+
                 }, function(err) {
                     console.log(err);
                 }
             );
+
+
+
         };
 
         GUM.shutter = function() {
