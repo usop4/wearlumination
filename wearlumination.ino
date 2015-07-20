@@ -24,15 +24,15 @@ void loop()
   int val1 = analogRead(in1); 
   int val2 = analogRead(in2);   
 
+  //debug_count = debug_count % 1024 + 100;
+  //val2 = debug_count;
+
   analogWrite(13, val1/4);
 
   Serial.print(val1);
-  //Serial.print(debug_count);
   Serial.print(",");
   Serial.print(val2);
   Serial.println();
-
-  debug_count = debug_count % 1024 + 100;
 
   delay(delay_time);
 }

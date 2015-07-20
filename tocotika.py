@@ -43,7 +43,7 @@ class Toco:
 				cmd = cmd + '0008'+'FFFFFFFFFFFFFFFF'
 		cmd = cmd + 'XX\r\n'
 		self.serial.write(cmd)
-		time.sleep(0.1)
+		#time.sleep(0.01)
 		return cmd
 
 	def analogWrite(self,pin,value):
@@ -58,7 +58,7 @@ class Toco:
 			cmd = cmd + 'FFFFFFFFFFFF'+self.hex4(value)+''
 		cmd = cmd + 'XX\r\n'
 		self.serial.write(cmd)
-		time.sleep(0.1)
+		#time.sleep(0.01)
 		return cmd
 
 	def hex4(self,value):
