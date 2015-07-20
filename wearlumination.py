@@ -3,9 +3,9 @@ import tocotika
 import time
 import sys
 import webbrowser
-from bottle import response,route,run
+from bottle import response,route,run,static_file
 
-arduino_tty = '/dev/tty.usbmodem1411'
+arduino_tty = '/dev/tty.usbmodem1451'
 tocostick_tty = '/dev/tty.usbserial-AHXMUX35'
 try:
     ser = serial.Serial(arduino_tty,115200)
@@ -26,15 +26,16 @@ link = '''
 <a href="http://localhost:8946/command/r0">r0</a>
 <a href="http://localhost:8946/command/r9">r9</a>
 '''
+count = 0;
 
 @route('/command/<command>')
 def command(command):
     response.set_header('Access-Control-Allow-Origin','*')
     try:
         if command[0] == "r":
-            toco.analogWrite(1,int(command[1])*20)
+            toco.analogWrite(1,int(command[1])*10)
         if command[0] == "g":
-            toco.analogWrite(1,int(command[1])*20)
+            toco.analogWrite(2,int(command[1])*10)
     except ValueError:
         pass
     except:
@@ -44,8 +45,21 @@ def command(command):
         raise
     return link
 
+@route('/')
+def send_index():
+    return static_file('index.html', root='./')
+
+@route('/static/<filename:path>')
+def send_static(filename):
+    return static_file(filename, root='./static')
+
+@route('/img/<filename:path>')
+def send_img(filename):
+    return static_file(filename, root='./img')
+
 @route('/sensor')
 def sensor():
+    global count
     list1 = []
     response.set_header('Access-Control-Allow-Origin','*')
     for i in range(30):
@@ -54,14 +68,18 @@ def sensor():
             sensor = ser.readline().rstrip().split(",")
             list1.append(int(sensor[0]))
 
-            val1 = map(int(sensor[0]),0,1024,0,256)
+            val1 = map(int(sensor[0]),0,1024,0,128)
             val1 = int(val1 * val1 / 256)
-            val2 = map(int(sensor[1]),0,1024,0,256)
+            val2 = map(int(sensor[1]),0,1024,0,128)
             val2 = int(val2 * val2 / 256)
 
             if toco:
-                toco.analogWrite(1,val1)
-                toco.analogWrite(2,val2)
+                count = count + 1;
+                if count % 2 == 0:
+                    toco.analogWrite(1,val1)
+                else:
+                    toco.analogWrite(2,val2)
+                print sensor,val1,val2
 
         except ValueError:
             pass
@@ -88,5 +106,5 @@ def map(value, fromLow, fromHigh, toLow, toHigh):
         return toHigh
     return int((value - fromLow) * (toHigh - toLow) / (fromHigh - fromLow))
 
-webbrowser.open("http://localhost:8946/sensor")
+webbrowser.open("http://localhost:8946/")
 run(host="localhost",port=8946,debug=True)

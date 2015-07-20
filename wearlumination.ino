@@ -6,14 +6,13 @@
 
 // ピン配置
 
-static int out1 = 3;//PWM
-static int out2 = 5;//PWM
 static int in1 = 1;
 static int in2 = 2;
 
 // その他
 
 int delay_time = 200;//200ms
+int debug_count = 0;
 
 void setup(){
   Serial.begin(115200);
@@ -28,9 +27,12 @@ void loop()
   analogWrite(13, val1/4);
 
   Serial.print(val1);
+  //Serial.print(debug_count);
   Serial.print(",");
   Serial.print(val2);
   Serial.println();
+
+  debug_count = debug_count % 1024 + 100;
 
   delay(delay_time);
 }
