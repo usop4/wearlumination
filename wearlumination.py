@@ -33,6 +33,7 @@ g:
 <a href="http://localhost:8946/command/g9">9</a>
 <br />
 '''
+link = ""
 
 graph1 = '''
 <canvas id="lineChart" height="300" width="200" style="width:210px;height:300px;"></canvas>
@@ -88,17 +89,19 @@ def send_img(filename):
 def command(command):
     response.set_header('Access-Control-Allow-Origin','*')
     try:
-        if command[0] == "0":
-            toco.analogWrite2(0,0)
-        if command[0] == "r":
-            toco.analogWrite(1,int(command[1])*10)
-        if command[0] == "g":
-            toco.analogWrite(2,int(command[1])*10)
+        if toco:
+            if command[0] == "0":
+                toco.analogWrite2(0,0)
+            if command[0] == "r":
+                toco.analogWrite(1,int(command[1])*10)
+            if command[0] == "g":
+                toco.analogWrite(2,int(command[1])*10)
     except ValueError:
         pass
     except:
         print sys.exc_info()[0]
-        toco.analogWrite2(0,0)
+        if toco:
+            toco.analogWrite2(0,0)
         raise
     return link
 
